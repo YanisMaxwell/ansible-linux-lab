@@ -1,1 +1,42 @@
+---
+- name: Configuration serveur AlmaLinux
+  hosts: alma
+  become: yes
 
+  tasks:
+    - name: Installer EPEL
+      dnf:
+        name: epel-release
+        state: present
+
+    - name: Installer htop
+      dnf:
+        name: htop
+        state: present
+
+    - name: Installer curl
+      dnf:
+        name: curl
+        state: present
+
+    - name: Installer vim
+      dnf:
+        name: vim
+        state: present
+
+    - name: Créer un utilisateur devops
+      user:
+        name: devops
+        password: "{{ 'password123' | password_hash('sha512') }}"
+        shell: /bin/bash
+
+    - name: Installer nginx
+      dnf:
+        name: nginx
+        state: present
+
+    - name: Démarrer nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes

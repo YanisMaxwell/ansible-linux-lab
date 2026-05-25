@@ -1,0 +1,54 @@
+## Problèmes rencontrés & dépannage
+
+Au cours de ce lab Ansible, plusieurs problèmes techniques ont été rencontrés et résolus afin de mieux comprendre le fonctionnement de Linux, SSH et Ansible dans un environnement réel.
+
+### Connexion SSH refusée
+
+Lors des premiers tests Ansible, la connexion SSH vers la machine cible AlmaLinux échouait avec une erreur de type :
+
+ssh: connect to host 192.168.x.x port 22: Connection refused
+
+Après analyse, le service SSH n’était pas correctement démarré sur la machine cible.
+
+Solution : 
+sudo systemctl enable --now sshd
+sudo systemctl status sshd
+
+Erreur d’authentification Ansible
+
+Une erreur d’authentification SSH empêchait également Ansible de communiquer avec la machine cible :
+
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password)
+Le problème provenait de l’absence de configuration des clés SSH.
+
+Solution appliquée :
+
+utilisation temporaire de l’option --ask-pass
+vérification manuelle de la connexion SSH avant exécution du playbook
+
+Commande utilisée :
+ansible -i inventory.ini alma -m ping --ask-pass
+
+Erreur rencontrée :
+Colons in unquoted values must be followed by a non-space character
+
+Solution appliquée :
+
+correction de l’indentation YAML
+ajout des espaces manquants
+vérification de la syntaxe avant exécution
+
+Commande utilisée :
+ansible-playbook --syntax-check setup.yml
+
+Installation impossible du paquet htop
+
+Le paquet htop ne pouvait pas être installé sur AlmaLinux.
+
+Erreur :
+No package htop available
+
+Après analyse, le dépôt EPEL n’était pas installé sur la machine cible.
+Ajout dans le fichier setup.yaml du dépôt supplémentaire EPEL (Extra Packages for Enterprise Linux)
+
+
